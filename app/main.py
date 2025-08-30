@@ -11,11 +11,11 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from loguru import logger
 
-from app.config import settings
-from app.database import create_db_and_tables
-from app.api import api_router
+from app.config.config import settings
+from app.config.database import create_db_and_tables
+from app.api.router import api_router
 from app.middleware import LoggingMiddleware
-from app.logging_config import setup_logging, log_business_event, log_error
+from app.config.logging_config import setup_logging, log_business_event, log_error
 
 
 @asynccontextmanager

@@ -66,15 +66,15 @@ class LoggingMiddleware:
             "user_agent": request.headers.get("user-agent"),
         }
         
-        # Log del request
-        logger.info(
-            f"{request.method} {request.url.path}",
-            extra={
-                "event_type": "request_start",
-                "request_info": request_info,
-                "timestamp": start_time
-            }
-        )
+        # Log del request (comentado temporalmente para evitar duplicación)
+        # logger.info(
+        #     f"{request.method} {request.url.path}",
+        #     extra={
+        #         "event_type": "request_start",
+        #         "request_info": request_info,
+        #         "timestamp": start_time
+        #     }
+        # )
 
         # Interceptar el response
         response_body = b""

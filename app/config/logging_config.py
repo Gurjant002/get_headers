@@ -17,7 +17,7 @@ import sys
 import logging
 from typing import Any, Dict
 from loguru import logger
-from app.config import settings
+from app.config.config import settings
 
 
 class InterceptHandler(logging.Handler):
@@ -67,8 +67,12 @@ def setup_logging():
         logger: Instancia configurada de Loguru
     """
     
-    # Remover el handler por defecto de loguru
+    # Remover TODOS los handlers existentes de loguru
     logger.remove()
+    
+    # Limpiar todos los handlers del logging estándar
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
     
     # Configurar formato de logs
     log_format = (
@@ -86,6 +90,7 @@ def setup_logging():
         colorize=True,
         backtrace=True,
         diagnose=True,
+        filter=lambda record: not record["name"].startswith("uvicorn.access")  # Filtrar logs de acceso
     )
     
     # Agregar handler para archivo (solo en producción)
@@ -120,10 +125,16 @@ def setup_logging():
     for logger_name in ["uvicorn", "uvicorn.error", "fastapi"]:
         logging_logger = logging.getLogger(logger_name)
         logging_logger.handlers = [InterceptHandler()]
+        logging_logger.propagate = False  # ← AGREGAR ESTA LÍNEA
     
     # Reducir verbosidad de algunas librerías
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+    
+    # CRÍTICO: Desactivar propagación del logger raíz
+    logging.getLogger().handlers.clear()  # ← NUEVA LÍNEA
+    logging.getLogger().addHandler(InterceptHandler())  # ← NUEVA LÍNEA
+    logging.getLogger().propagate = False  # ← NUEVA LÍNEA
     
     return logger
 

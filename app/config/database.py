@@ -6,7 +6,7 @@ las funciones necesarias para crear tablas y obtener sesiones.
 """
 
 from sqlmodel import create_engine, SQLModel, Session
-from app.config import settings
+from app.config.config import settings
 
 # Engine de SQLAlchemy/SQLModel
 engine = create_engine(

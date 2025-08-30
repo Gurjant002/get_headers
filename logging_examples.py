@@ -6,7 +6,7 @@ disponibles en la plantilla FastAPI.
 """
 
 from loguru import logger
-from app.logging_config import (
+from app.config.logging_config import (
     log_request, 
     log_response, 
     log_error, 
@@ -259,3 +259,13 @@ MEJORES PRÁCTICAS PARA LOGGING:
    - Análisis de patrones
    - Dashboards de métricas
 """
+
+print("Ejecutando ejemplos de logging...")
+print("Logs básicos:")
+ejemplos_logging_basico()
+print("\nLogs estructurados:")
+ejemplos_logging_estructurado()
+print("\nLogs de errores:")
+ejemplos_logging_errores()
+print("\nConfiguración personalizada de logging:")
+configuracion_logging_personalizada()
