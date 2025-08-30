@@ -35,6 +35,7 @@ async def lifespan(app: FastAPI):
         - Se ejecuta una vez por ciclo de vida de la aplicación
     """
     # Startup
+    setup_logging()  # ← AGREGAR ESTA LÍNEA
     logger.info("🚀 Starting FastAPI application...")
     create_db_and_tables()
     log_business_event("application_startup", {"version": settings.app_version})

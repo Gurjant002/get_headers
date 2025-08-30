@@ -6,7 +6,8 @@ incluyendo configuración de base de datos, JWT, CORS, etc.
 """
 
 from pydantic_settings import BaseSettings
-from typing import List
+from pydantic import Field, field_validator
+from typing import List, Union
 
 
 class Settings(BaseSettings):
@@ -36,12 +37,19 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     # App
-    app_name: str = "FastAPI Template"
+    app_name: str = "get_headers"
     app_version: str = "1.0.0"
     debug: bool = True
     
-    # CORS
-    allowed_origins: List[str] = ["http://localhost:3000", "http://localhost:8080"]
+    # CORS - Usar string en lugar de lista para evitar problemas de parsing
+    allowed_origins_str: str = "http://localhost:3000,http://localhost:8080"
+    
+    @property
+    def allowed_origins(self) -> List[str]:
+        """Convierte el string de orígenes a lista."""
+        if not self.allowed_origins_str.strip():
+            return []
+        return [origin.strip() for origin in self.allowed_origins_str.split(',') if origin.strip()]
 
     class Config:
         """Configuración de Pydantic Settings."""
