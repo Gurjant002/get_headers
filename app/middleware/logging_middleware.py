@@ -19,6 +19,7 @@ from typing import Callable
 from fastapi import Request, Response
 from fastapi.routing import APIRoute
 from loguru import logger
+from app.config.logging_config import log_request, log_response
 
 
 class LoggingMiddleware:
@@ -66,6 +67,23 @@ class LoggingMiddleware:
             "user_agent": request.headers.get("user-agent"),
         }
         
+        # Intentar extraer user_id del token JWT si existe
+        user_id = None
+        auth_header = request.headers.get("authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            try:
+                from app.security import verify_token
+                token = auth_header.split(" ")[1]
+                username = verify_token(token)
+                if username:
+                    user_id = username
+            except Exception:
+                # Si hay error al verificar token, continuar sin user_id
+                pass
+        
+        # Automatizar log_request con user_id
+        log_request(request_info, user_id)
+        
         # Log del request (comentado temporalmente para evitar duplicación)
         # logger.info(
         #     f"{request.method} {request.url.path}",
@@ -107,6 +125,9 @@ class LoggingMiddleware:
             "process_time": round(process_time * 1000, 2),  # en ms
             "response_size": len(response_body)
         }
+        
+        # Automatizar log_response con user_id
+        log_response(response_info, response_status_code, user_id)
         
         # Nivel de log según status code
         if response_status_code >= 500:

@@ -15,6 +15,9 @@ Ejemplo:
     api_router.include_router(products.router, prefix="/products", tags=["products"])
 """
 from fastapi import APIRouter
-
+from app.api.headers.routes import router as headers_routes
 api_router = APIRouter()
+
+# Incluir los routers de los diferentes módulos
+api_router.include_router(headers_routes, prefix="/headers", tags=["headers"])
 
